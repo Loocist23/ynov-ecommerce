@@ -4,17 +4,30 @@ const orders = require('../data/orders');
 
 // GET /api/orders
 router.get('/', (req, res) => {
-  res.json(orders);
+  if (process.env.FLAG_CICD === 'true') {
+    const mockOrders = orders.map(order => ({ id: order.id }));
+    res.json(mockOrders);
+  } else {
+    res.json(orders);
+  }
 });
 
 // GET /api/orders/:id
 router.get('/:id', (req, res) => {
   const id = parseInt(req.params.id);
-  const order = orders.find(o => o.id === id);
-  if (!order) {
-    return res.status(404).json({ error: 'Order not found' });
+  if (process.env.FLAG_CICD === 'true') {
+    const order = orders.find(o => o.id === id);
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+    res.json({ id: order.id });
+  } else {
+    const order = orders.find(o => o.id === id);
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+    res.json(order);
   }
-  res.json(order);
 });
 
 // POST /api/orders
