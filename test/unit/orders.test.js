@@ -1,10 +1,10 @@
 // Mock the email service - this is hoisted by Jest
-jest.mock('../src/services/email', () => ({
+jest.mock('../../src/services/email', () => ({
   sendOrderConfirmation: jest.fn().mockResolvedValue({ success: true })
 }));
 
 const request = require('supertest');
-const orders = require('../src/data/orders');
+const orders = require('../../src/data/orders');
 
 describe('Orders API', () => {
   let server;
@@ -17,8 +17,8 @@ describe('Orders API', () => {
     jest.resetModules();
     
     // Now require the modules - they will use the mocked email service
-    createServer = require('../src/index').createServer;
-    sendOrderConfirmation = require('../src/services/email').sendOrderConfirmation;
+    createServer = require('../../src/index').createServer;
+    sendOrderConfirmation = require('../../src/services/email').sendOrderConfirmation;
     
     app = createServer();
     server = app.listen(0); // Use random available port
