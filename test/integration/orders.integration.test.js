@@ -177,10 +177,10 @@ describe('Orders Integration Tests (SQLite)', () => {
   });
 
   // ============================================
-  // ❌ TEST QUI ECHOUE VOLONTAIREMENT (pour démonstration)
+  // ❌ TEST QUI ECHOUE VOLONTAIREMENT (pour démonstration) - Désactivé pour la CI
   // ============================================
   describe('Failing test example', () => {
-    it('should fail - this is an intentional failing test', async () => {
+    it.skip('should fail - this is an intentional failing test', async () => {
       // Ce test est volontairement faux pour montrer un échec
       const res = await request(app)
         .post('/api/orders')
