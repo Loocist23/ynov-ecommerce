@@ -4,5 +4,13 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/setup.js'],
   collectCoverageFrom: ['src/**/*.js'],
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov'],
+  coverageReporters: ['text', 'lcov', 'html'],
+  coverageThreshold: {
+    global: {
+      statements: 75,
+      branches: 75,
+      functions: 75,
+      lines: 75
+    }
+  }
 };
