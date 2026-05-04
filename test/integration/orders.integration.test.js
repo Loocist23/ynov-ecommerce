@@ -43,12 +43,14 @@ describe('Orders Integration Tests (SQLite)', () => {
     it('should persist order in database', async () => {
       const newOrder = { userId: 2, productIds: [4, 5] };
       
+      // Create order
       const createRes = await request(app)
         .post('/api/orders')
         .send(newOrder);
       
       const orderId = createRes.body.id;
 
+      // Retrieve it
       const getRes = await request(app)
         .get(`/api/orders/${orderId}`);
 
@@ -92,6 +94,7 @@ describe('Orders Integration Tests (SQLite)', () => {
     });
 
     it('should return all orders from database', async () => {
+      // Create some orders first
       await request(app).post('/api/orders').send({ userId: 1, productIds: [1] });
       await request(app).post('/api/orders').send({ userId: 2, productIds: [2] });
 
@@ -105,12 +108,14 @@ describe('Orders Integration Tests (SQLite)', () => {
 
   describe('GET /api/orders/:id', () => {
     it('should return a specific order by ID', async () => {
+      // Create an order
       const createRes = await request(app)
         .post('/api/orders')
         .send({ userId: 1, productIds: [1] });
       
       const orderId = createRes.body.id;
 
+      // Get it by ID
       const res = await request(app)
         .get(`/api/orders/${orderId}`);
 
@@ -129,12 +134,14 @@ describe('Orders Integration Tests (SQLite)', () => {
 
   describe('PATCH /api/orders/:id/status', () => {
     it('should update order status', async () => {
+      // Create an order
       const createRes = await request(app)
         .post('/api/orders')
         .send({ userId: 1, productIds: [1] });
       
       const orderId = createRes.body.id;
 
+      // Update status
       const res = await request(app)
         .patch(`/api/orders/${orderId}/status`)
         .send({ status: 'shipped' });
@@ -153,6 +160,7 @@ describe('Orders Integration Tests (SQLite)', () => {
     });
 
     it('should return 400 for invalid status', async () => {
+      // Create an order
       const createRes = await request(app)
         .post('/api/orders')
         .send({ userId: 1, productIds: [1] });

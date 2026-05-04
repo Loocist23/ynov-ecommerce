@@ -1,5 +1,6 @@
 name: CI
 
+# Déclencheurs : sur chaque push et pull_request
 on:
   push:
     branches: [ main, features/** ]
