@@ -37,4 +37,4 @@ jobs:
 
       # 5. Exécuter tous les tests (unitaires + intégration)
       - name: Run tests
-        run: npm test -- --bail
+        run: npm test -- --bail --runInBand
