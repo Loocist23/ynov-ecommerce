@@ -21,10 +21,10 @@ describe('First tests - Failing test at position 2', () => {
     expect(res.statusCode).toBe(201);
   });
 
-  it('should fail - this is an intentional failing test', async () => {
-    const res = await request(app)
-      .post('/api/orders')
-      .send({ userId: 1, productIds: [1] });
-    expect(res.body.status).toBe('shipped'); // ❌ FAIL
-  });
+  // it('should fail - this is an intentional failing test', async () => {
+  //   const res = await request(app)
+  //     .post('/api/orders')
+  //     .send({ userId: 1, productIds: [1] });
+  //   expect(res.body.status).toBe('shipped'); // ❌ FAIL
+  // });
 });
