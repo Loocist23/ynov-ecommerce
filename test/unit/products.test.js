@@ -1,6 +1,6 @@
 const request = require('supertest');
-const { createServer } = require('../src/index');
-const products = require('../src/data/products');
+const { createServer } = require('../../src/index');
+const products = require('../../src/data/products');
 
 describe('Products API', () => {
   let server;

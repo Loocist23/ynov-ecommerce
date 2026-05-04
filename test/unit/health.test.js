@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { createServer } = require('../src/index');
+const { createServer } = require('../../src/index');
 
 describe('Health Check', () => {
   let server;

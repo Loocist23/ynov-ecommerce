@@ -1,6 +1,6 @@
 const request = require('supertest');
-const { createServer } = require('../src/index');
-const users = require('../src/data/users');
+const { createServer } = require('../../src/index');
+const users = require('../../src/data/users');
 
 describe('Users API', () => {
   let server;

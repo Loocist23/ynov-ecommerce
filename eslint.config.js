@@ -13,14 +13,16 @@ export default [
         process: 'readonly',
         console: 'readonly',
         setTimeout: 'readonly',
-        clearTimeout: 'readonly'
+        clearTimeout: 'readonly',
+        db: 'readonly',
+        fetch: 'readonly'
       },
       ecmaVersion: 'latest',
       sourceType: 'commonjs'
     },
     rules: {
       'no-console': 'off',
-      'no-unused-vars': 'warn',
+      'no-unused-vars': 'off',
       'no-undef': 'error'
     }
   }
