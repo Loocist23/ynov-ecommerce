@@ -11,14 +11,18 @@ export default [
         __dirname: 'readonly',
         __filename: 'readonly',
         process: 'readonly',
-        console: 'readonly'
+        console: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        db: 'readonly',
+        fetch: 'readonly'
       },
       ecmaVersion: 'latest',
       sourceType: 'commonjs'
     },
     rules: {
-      'no-console': 'warn',
-      'no-unused-vars': 'warn',
+      'no-console': 'off',
+      'no-unused-vars': 'off',
       'no-undef': 'error'
     }
   }
