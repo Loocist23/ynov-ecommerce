@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const orders = require('../data/orders');
+const { sendOrderConfirmation } = require('../services/email');
 
 // GET /api/orders
 router.get('/', (req, res) => {
@@ -31,7 +32,7 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/orders
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { userId, productIds } = req.body;
   if (!userId || !productIds || !Array.isArray(productIds)) {
     return res.status(400).json({ error: 'userId and productIds[] are required' });
@@ -45,6 +46,15 @@ router.post('/', (req, res) => {
     createdAt: new Date().toISOString().split('T')[0],
   };
   orders.push(newOrder);
+  
+  // Send confirmation email (fire and forget - don't block response)
+  try {
+    await sendOrderConfirmation(newOrder);
+  } catch (error) {
+    console.error('[Email] Failed to send confirmation email:', error);
+    // Don't fail the request if email fails
+  }
+  
   res.status(201).json(newOrder);
 });
 

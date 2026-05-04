@@ -1,12 +1,25 @@
+// Mock the email service - this is hoisted by Jest
+jest.mock('../src/services/email', () => ({
+  sendOrderConfirmation: jest.fn().mockResolvedValue({ success: true })
+}));
+
 const request = require('supertest');
-const { createServer } = require('../src/index');
 const orders = require('../src/data/orders');
 
 describe('Orders API', () => {
   let server;
   let app;
+  let createServer;
+  let sendOrderConfirmation;
 
   beforeAll(() => {
+    // Reset modules to ensure we get the mocked version
+    jest.resetModules();
+    
+    // Now require the modules - they will use the mocked email service
+    createServer = require('../src/index').createServer;
+    sendOrderConfirmation = require('../src/services/email').sendOrderConfirmation;
+    
     app = createServer();
     server = app.listen(0); // Use random available port
   });
@@ -56,6 +69,11 @@ describe('Orders API', () => {
   });
 
   describe('POST /api/orders', () => {
+    beforeEach(() => {
+      // Clear all mock calls before each test
+      sendOrderConfirmation.mockClear();
+    });
+
     it('should create a new order', async () => {
       const newOrder = {
         userId: 1,
@@ -76,6 +94,43 @@ describe('Orders API', () => {
         .send({});
       expect(res.statusCode).toEqual(400);
       expect(res.body).toHaveProperty('error', 'userId and productIds[] are required');
+    });
+
+    it('should send confirmation email when order is created', async () => {
+      const newOrder = {
+        userId: 1,
+        productIds: [1, 2, 3]
+      };
+      const res = await request(app)
+        .post('/api/orders')
+        .send(newOrder);
+      
+      expect(res.statusCode).toEqual(201);
+      expect(sendOrderConfirmation).toHaveBeenCalledTimes(1);
+      expect(sendOrderConfirmation).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: newOrder.userId,
+          productIds: newOrder.productIds,
+          status: 'pending'
+        })
+      );
+    });
+
+    it('should still create order even if email sending fails', async () => {
+      // Mock email service to reject
+      sendOrderConfirmation.mockRejectedValueOnce(new Error('Email service down'));
+      
+      const newOrder = {
+        userId: 1,
+        productIds: [1, 2, 3]
+      };
+      const res = await request(app)
+        .post('/api/orders')
+        .send(newOrder);
+      
+      expect(res.statusCode).toEqual(201);
+      expect(res.body).toHaveProperty('id');
+      expect(sendOrderConfirmation).toHaveBeenCalledTimes(1);
     });
   });
 
