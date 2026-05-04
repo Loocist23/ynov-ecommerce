@@ -37,4 +37,4 @@ jobs:
 
       # 5. Exécuter tous les tests (unitaires + intégration)
       - name: Run tests
-        run: npm test
+        run: npm test -- --bail

@@ -40,6 +40,20 @@ describe('Orders Integration Tests (SQLite)', () => {
       expect(res.body.createdAt).toBeDefined();
     });
 
+    // ============================================
+    // ❌ TEST QUI ECHOUE VOLONTAIREMENT (2ème position)
+    // ============================================
+    it('should fail - this is an intentional failing test', async () => {
+      // Ce test est volontairement faux pour montrer un échec
+      const res = await request(app)
+        .post('/api/orders')
+        .send({ userId: 1, productIds: [1] });
+
+      // Attente : le statut devrait être 'pending', mais on vérifie 'shipped'
+      // → Ce test va ÉCHOUER
+      expect(res.body.status).toBe('shipped'); // ❌ MAUVAIS : c'est 'pending' !
+    });
+
     it('should persist order in database', async () => {
       const newOrder = { userId: 2, productIds: [4, 5] };
       
@@ -165,22 +179,6 @@ describe('Orders Integration Tests (SQLite)', () => {
 
       expect(res.statusCode).toBe(400);
       expect(res.body).toHaveProperty('error');
-    });
-  });
-
-  // ============================================
-  // ❌ TEST QUI ECHOUE VOLONTAIREMENT (pour démonstration)
-  // ============================================
-  describe('Failing test example', () => {
-    it('should fail - this is an intentional failing test', async () => {
-      // Ce test est volontairement faux pour montrer un échec
-      const res = await request(app)
-        .post('/api/orders')
-        .send({ userId: 1, productIds: [1] });
-
-      // Attente : le statut devrait être 'pending', mais on vérifie 'shipped'
-      // → Ce test va ÉCHOUER
-      expect(res.body.status).toBe('shipped'); // ❌ MAUVAIS : c'est 'pending' !
     });
   });
 });
