@@ -1,6 +1,5 @@
 name: CI
 
-# Déclencheurs : sur chaque push et pull_request
 on:
   push:
     branches: [ main, features/** ]
@@ -8,33 +7,44 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
-    name: Tests & Lint
+  unit-tests:
+    name: Unit Tests
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20]
-
     steps:
-      # 1. Checkout le code
       - uses: actions/checkout@v4
 
-      # 2. Installer Node.js
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
           cache: 'npm'
 
-      # 3. Installer les dépendances
       - name: Install dependencies
         run: npm ci
 
-      # 4. Exécuter le lint
       - name: Lint
         run: npm run lint
 
-      # 5. Exécuter tous les tests (unitaires + intégration)
-      - name: Run tests
-        run: npm test -- --bail --runInBand
+      - name: Run unit tests
+        run: npm test -- test/unit/
+
+  integration-tests:
+    name: Integration Tests (SQLite)
+    needs: unit-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run integration tests
+        run: npm test -- test/integration/
