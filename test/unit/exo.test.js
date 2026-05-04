@@ -1,4 +1,4 @@
-const { priceWithTax, convertPrice } = require('../../src/exo');
+const { priceWithTax, convertPrice, saveOrder } = require('../../src/exo');
 
 describe('priceWithTax', () => {
   it('should calculate price with 20% tax for FR', () => {
@@ -70,5 +70,44 @@ describe('convertPrice', () => {
     });
 
     await expect(convertPrice(100, 'USD', 'EUR')).rejects.toThrow('Invalid JSON');
+  });
+});
+
+describe('saveOrder', () => {
+  beforeEach(() => {
+    global.db = {
+      products: {
+        findById: jest.fn(),
+      },
+      orders: {
+        create: jest.fn(),
+      },
+    };
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    delete global.db;
+  });
+
+  it('should create order with product price', async () => {
+    const mockProduct = { id: 1, price: 99.99 };
+    db.products.findById.mockResolvedValueOnce(mockProduct);
+    db.orders.create.mockResolvedValueOnce({ id: 1, ...mockProduct });
+
+    const order = { productId: 1, userId: 1 };
+    const result = await saveOrder(order);
+
+    expect(db.products.findById).toHaveBeenCalledWith(order.productId);
+    expect(db.orders.create).toHaveBeenCalledWith({ ...order, price: mockProduct.price });
+    expect(result).toEqual({ id: 1, ...mockProduct });
+  });
+
+  it('should throw error when product not found', async () => {
+    db.products.findById.mockResolvedValueOnce(null);
+
+    const order = { productId: 999, userId: 1 };
+    await expect(saveOrder(order)).rejects.toThrow('Product not found');
+    expect(db.orders.create).not.toHaveBeenCalled();
   });
 });

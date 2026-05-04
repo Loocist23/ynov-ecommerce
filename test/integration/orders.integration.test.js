@@ -175,20 +175,4 @@ describe('Orders Integration Tests (SQLite)', () => {
       expect(res.body).toHaveProperty('error');
     });
   });
-
-  // ============================================
-  // ❌ TEST QUI ECHOUE VOLONTAIREMENT (pour démonstration) - Désactivé pour la CI
-  // ============================================
-  describe('Failing test example', () => {
-    it.skip('should fail - this is an intentional failing test', async () => {
-      // Ce test est volontairement faux pour montrer un échec
-      const res = await request(app)
-        .post('/api/orders')
-        .send({ userId: 1, productIds: [1] });
-
-      // Attente : le statut devrait être 'pending', mais on vérifie 'shipped'
-      // → Ce test va ÉCHOUER
-      expect(res.body.status).toBe('shipped'); // ❌ MAUVAIS : c'est 'pending' !
-    });
-  });
 });
