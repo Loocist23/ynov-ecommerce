@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        NODE_VERSION = '20'
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -12,11 +8,15 @@ pipeline {
             }
         }
 
-        stage('Install Node.js 20') {
+        stage('Setup Node.js 20 via nvm') {
             steps {
                 sh '''
-                curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-                sudo apt-get install -y nodejs
+                # Install nvm (local user install, no sudo)
+                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                nvm install 20
+                nvm use 20
                 node -v
                 npm -v
                 '''
