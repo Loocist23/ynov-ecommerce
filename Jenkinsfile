@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        SONAR_KEY = 'Loocist23_ynov-ecommerce'
+        SONAR_ORG = 'loocist23'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -72,6 +77,20 @@ pipeline {
                 nvm use 20
                 npm test -- --coverage
                 '''
+            }
+        }
+
+        stage('SonarCloud') {
+            steps {
+                sh '''
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                nvm use 20
+                npm test -- --coverage
+                '''
+                withSonarQubeEnv('SonarCloud') {
+                    sh 'sonar-scanner -Dsonar.login=${SONAR_TOKEN}'
+                }
             }
         }
     }
