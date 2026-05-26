@@ -10,7 +10,8 @@
 // 4️⃣ Charger la librairie partagée depuis le repo shared-lib-jenkins
 // NOTE: Il faut configurer "shared-lib-jenkins" comme Global Library dans Jenkins
 // (Manage Jenkins > Configure System > Global Pipeline Libraries)
-@Library('shared-lib-jenkins') _
+// Spécification de la version (main ou develop selon ta branche)
+@Library('shared-lib-jenkins@main') _
 
 pipeline {
     agent any
