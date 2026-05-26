@@ -82,14 +82,15 @@ pipeline {
 
         stage('SonarCloud') {
             steps {
-                sh '''
-                export NVM_DIR="$HOME/.nvm"
-                [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-                nvm use 20
-                npm test -- --coverage
-                '''
-                withSonarQubeEnv('SonarCloud') {
-                    sh 'sonar-scanner -Dsonar.login=${SONAR_TOKEN}'
+                withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                    sh '''
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                    nvm use 20
+                    npm install -g sonar-scanner
+                    npm test -- --coverage
+                    sonar-scanner -Dsonar.login=$SONAR_TOKEN
+                    '''
                 }
             }
         }
