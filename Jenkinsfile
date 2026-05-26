@@ -8,48 +8,70 @@ pipeline {
             }
         }
 
-        stage('Setup Node.js 20 via nvm') {
+        stage('Setup Node.js 20') {
             steps {
                 sh '''
-                # Install nvm (local user install, no sudo)
                 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
                 export NVM_DIR="$HOME/.nvm"
                 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
                 nvm install 20
                 nvm use 20
-                node -v
-                npm -v
                 '''
             }
         }
 
         stage('Install dependencies') {
             steps {
-                sh 'npm ci'
+                sh '''
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                nvm use 20
+                npm ci
+                '''
             }
         }
 
         stage('Lint') {
             steps {
-                sh 'npm run lint'
+                sh '''
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                nvm use 20
+                npm run lint
+                '''
             }
         }
 
         stage('Unit Tests') {
             steps {
-                sh 'npm test -- test/unit/'
+                sh '''
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                nvm use 20
+                npm test -- test/unit/
+                '''
             }
         }
 
         stage('Integration Tests') {
             steps {
-                sh 'npm test -- test/integration/'
+                sh '''
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                nvm use 20
+                npm test -- test/integration/
+                '''
             }
         }
 
         stage('Coverage') {
             steps {
-                sh 'npm test -- --coverage'
+                sh '''
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                nvm use 20
+                npm test -- --coverage
+                '''
             }
         }
     }
