@@ -86,11 +86,10 @@ pipeline {
                 export NVM_DIR="$HOME/.nvm"
                 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
                 nvm use 20
+                npm install -g sonar-scanner
                 npm test -- --coverage
+                sonar-scanner -Dsonar.login=${SONAR_TOKEN}
                 '''
-                withSonarQubeEnv('SonarCloud') {
-                    sh 'sonar-scanner -Dsonar.login=${SONAR_TOKEN}'
-                }
             }
         }
     }
